@@ -12,12 +12,23 @@ public class MovesController : Controller
     [HttpPost]
     public IActionResult Moves(Guid gameId, [FromBody] UserInputDto userInput)
     {
-        var currentPlayerPos = userInput.ClickedPos;
+        var game = TestData.AGameDto(userInput.ClickedPos);
 
-        var game = TestData.AGameDto(currentPlayerPos);
+        if (Walls.WallsEnum == null)
+        {
+            Walls.WallsEnum = Walls.GetWalls(game);
+        }
 
         if (userInput.ClickedPos != null)
         {
+            foreach (var wall in Walls.WallsEnum)
+            {
+                if (wall.Pos.Equals(userInput.ClickedPos))
+                {
+                    return NoContent();
+                }
+            }
+            
             if (Math.Abs(userInput.ClickedPos.X - Player.CurrentPlayerPos.X) +
                 Math.Abs(userInput.ClickedPos.Y - Player.CurrentPlayerPos.Y) == 1)
             {
