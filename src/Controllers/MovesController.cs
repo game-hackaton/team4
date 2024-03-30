@@ -12,9 +12,27 @@ public class MovesController : Controller
     [HttpPost]
     public IActionResult Moves(Guid gameId, [FromBody]UserInputDto userInput)
     {
-        var game = TestData.AGameDto(userInput.ClickedPos ?? new VectorDto {X = 1, Y = 1});
+        var currentPlayerPos = userInput.ClickedPos ?? new VectorDto { X = 1, Y = 1 };
+        if (Player.CurrentPlayerPos == null)
+        {
+            Player.CurrentPlayerPos = currentPlayerPos;
+        }
+        var game = TestData.AGameDto(currentPlayerPos);
+        
         if (userInput.ClickedPos != null)
-            game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
-        return Ok(game);
+        {
+            if (Math.Abs(userInput.ClickedPos.X - Player.CurrentPlayerPos.X) <= 1
+                && Math.Abs(userInput.ClickedPos.Y - Player.CurrentPlayerPos.Y) <= 1)
+            {
+                Console.WriteLine(userInput.ClickedPos.X + " " + Player.CurrentPlayerPos.X);
+
+                Player.CurrentPlayerPos = userInput.ClickedPos;
+                game.Cells.First(c => c.Type == "player").Pos = Player.CurrentPlayerPos;
+                return Ok(game);
+
+            }
+        }
+
+        return NoContent();
     }
 }
