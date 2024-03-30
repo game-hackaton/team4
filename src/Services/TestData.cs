@@ -28,10 +28,10 @@ public class TestData
         //target id:2
         testCells[5] = new CellDto("5", new VectorDto { X = 2, Y = 2 }, "wall", "", 0);
         testCells[6] = new CellDto("6", new VectorDto { X = 3, Y = 3 }, "wall", "", 0);
-        testCells[7] = new CellDto("7", new VectorDto { X = 2, Y = 4 }, "box", "", 0);
-        testCells[8] = new CellDto("8", new VectorDto { X = 4, Y = 5 }, "box", "", 0);
-        testCells[9] = new CellDto("9", new VectorDto { X = 3, Y = 1 }, "target", "", 20);
-        testCells[10] = new CellDto("10", new VectorDto { X = 7, Y = 6 }, "target", "", 20);
+        testCells[7] = new CellDto("7",new VectorDto { X = 4, Y = 5}, "wall", "", 0);
+        testCells[8] = new CellDto("8", new VectorDto { X = 7, Y = 6 }, "wall", "", 20);
+        testCells[9] = new CellDto("9", Boxes.BoxesEnum[0], "box", "", 0);
+        testCells[10] = new CellDto("10", new VectorDto { X = 3, Y = 1 }, "target", "", 20);
         testCells[11] = new CellDto("11", movingObjectPosition, "player", "", 10);
         
         int index = testCells.Count(s => s != null);
@@ -42,7 +42,8 @@ public class TestData
         AddWallY(7, 9);
 
         testCells = testCells.Where(c => c != null).ToArray();
-        return new GameDto(testCells, true, true, width, height, Guid.Empty, movingObjectPosition.X == 0,
+        return new GameDto(testCells, true, true, width, height, Guid.Empty, 
+            movingObjectPosition.X == 4 && movingObjectPosition.Y == 1,
             movingObjectPosition.Y);
 
         void AddWallX(int j, int y)
